@@ -1,0 +1,46 @@
+<?php
+
+function title_case_menu() {
+    $items = array();
+    $items['title_case'] = array(
+        'title' => 'Title Case Maker!',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('title_case_form'),
+        'access callback' => TRUE,
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['title_case_result'] = array(
+      'title' => 'Result',
+      'page callback' => 'display_result',
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+
+function title_case_form(){
+    $form['title_phrase'] = array(
+        '#title' => 'Upper Caser',
+        '#type' => 'textfield',
+        '#description' => t('Please enter some text to be upper cased...'),
+    );
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'Do IT!',
+    );
+    return $form;
+}
+
+function title_case_form_submit($form, &$form_state){
+    $user_input = $form_state['values']['title_phrase'];
+    $upper_user_input = strtoupper($user_input);
+    $_SESSION['title_case'] = $upper_user_input;
+    $form_state['redirect'] = 'title_case_result';
+}
+
+function display_result() {
+  $result = $_SESSION['title_case'];
+  return $result;
+}

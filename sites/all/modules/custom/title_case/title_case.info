@@ -1,0 +1,5 @@
+name = Title Case
+description = Changes a phrase input into Title Case.
+package = Custom
+core = 7.x
+files[] = title_case.module
