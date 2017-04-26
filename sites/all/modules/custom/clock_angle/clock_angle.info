@@ -1,0 +1,5 @@
+name = Clock Angle
+description = Gives the number of degrees between the more acute angle that two clock hands make.
+package = Custom
+core = 7.x
+files[] = clock_angle.module
