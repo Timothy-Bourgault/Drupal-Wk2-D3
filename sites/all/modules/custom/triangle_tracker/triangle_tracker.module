@@ -1,0 +1,74 @@
+<?php
+  function triangle_tracker_menu() {
+    $items = array();
+    $items['triangle_tracker'] = array(
+      'title' => 'Triangle Tracker',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('triangle_sides_form'),
+      'access callback' => TRUE,
+      'type' => MENU_NORMAL_ITEM,
+    );
+    $items['result'] = array(
+      'title' => 'Triangle Definition',
+      'page callback' => 'display_triangle_definition',
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+    );
+    return $items;
+  }
+
+  function triangle_sides_form() {
+    $form['first_side'] = array(
+      '#title' => 'First Side',
+      '#type' => 'textfield',
+      '#description' => t('Enter a number of centimeters between 1-100'),
+      '#element_validate' => array('element_validate_number', 'element_validate_side_length'),
+      '#required' => TRUE,
+    );
+    $form['second_side'] = array(
+      '#title' => 'Second Side',
+      '#type' => 'textfield',
+      '#description' => t('Enter a number of centimeters between 1-100'),
+      '#element_validate' => array('element_validate_number',
+      'element_validate_side_length'),
+      '#required' => TRUE,
+    );
+    $form['third_side'] = array(
+      '#title' => 'Third Side',
+      '#type' => 'textfield',
+      '#element_validate' => array('element_validate_number', 'element_validate_side_length'),
+      '#description' => t('Enter a number of centimeters between 1-100'),
+      '#required' => TRUE,
+    );
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => 'Define That Triangle!',
+    );
+    return $form;
+  }
+
+  function triangle_tracker_form_submit($form, &$form_state) {
+    $first_side_lenghth = $form_state['values']['first_side'];
+    $second_side_lenghth = $form_state['values']['second_side'];
+    $third_side_lenghth = $form_state['values']['third_side'];
+
+    if($first_side_length == $second_side_length && $first_side_length == $third_side_length) {
+      $triangle_definition == 'Equalateral';
+    } elseif($first_side_length == $second_side_length ) {
+      $triangle_definition == 'Isosceles';
+    }
+    $_SESSION['triangle_definition'] = $triangle_definition;
+    $form_state['redirect'] = 'result';
+  }
+
+
+  function element_validate_side_length($element) {
+    if($element['#value'] < 1 || $element['#value'] > 100) {
+      form_error($element, t('You best make the number between 1-100.'));
+    }
+  }
+
+  function display_triangle_definition() {
+    $final_result = $_SESSION['triangle_definition'];
+    return "According to the length of the sides you entered, the resulting triangle is an " . $final_result . " triangle. Good Job Triangle Tracker!";
+  }

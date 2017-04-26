@@ -1,0 +1,5 @@
+name = Triangle Tracker
+description = Allows a user to enter the lengths of the 3 sides of a triangle and then tells them what kind of triangle it is.
+package = Custom
+core = 7.x
+files[] = triangle_tracker.module
