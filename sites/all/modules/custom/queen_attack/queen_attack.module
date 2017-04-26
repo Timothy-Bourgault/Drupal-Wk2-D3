@@ -1,0 +1,92 @@
+<?php
+  function queen_attack_menu() {
+     $items = array();
+     $items['queen_attack'] = array(
+       'title' => 'Queen Attack',
+       'page callback' => 'drupal_get_form',
+       'page arguments' => array('queen_attack_form'),
+       'access callback' => TRUE,
+       'type' => MENU_NORMAL_ITEM,
+     );
+     $items['result'] = array(
+       'title' => 'Attack Results',
+       'page callback' => 'display_attack_results',
+       'access callback' => TRUE,
+       'type' => MENU_CALLBACK,
+     );
+     return $items;
+  }
+
+  function queen_attack_form() {
+    $form['queen_position_x'] = array(
+      '#title' => "Queen's position X",
+      '#type' => "textfield",
+      '#description' => t("Plot the Queen's position along the X-axis (1-8)."),
+      '#element_validate' => array('element_validate_number', 'element_validate_range'),
+      '#required' => TRUE,
+    );
+    $form['queen_position_y'] = array(
+      '#title' => "Queen's position Y",
+      '#type' => "textfield",
+      '#description' => t("Plot the Queen's position along the Y-axis (1-8)."),
+      '#element_validate' => array('element_validate_number', 'element_validate_range'),
+      '#required' => TRUE,
+    );
+    $form['enemy_position_x'] = array(
+      '#title' => "Enemy's position X",
+      '#type' => "textfield",
+      '#description' => t("Plot the Enemy's position along the X-axis (1-8)."),
+      '#element_validate' => array('element_validate_number', 'element_validate_range'),
+      '#required' => TRUE,
+    );
+    $form['enemy_position_y'] = array(
+      '#title' => "Enemy's position Y",
+      '#type' => "textfield",
+      '#description' => t("Plot the Enemy's position along the Y-axis (1-8)."),
+      '#element_validate' => array('element_validate_number', 'element_validate_range'),
+      '#required' => TRUE,
+    );
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => 'Attack!'
+    );
+    return $form;
+  }
+
+  function queen_attack_form_submit($form, &$form_state){
+    $queen_position_x = $form_state['values']['queen_position_x'];
+    $queen_position_y = $form_state['values']['queen_position_y'];
+    $enemy_position_x = $form_state['values']['enemy_position_x'];
+    $enemy_position_y = $form_state['values']['enemy_position_y'];
+
+    $x_diff = $queen_position_x - $enemy_position_x;
+    $y_diff = $queen_position_y - $enemy_position_y;
+
+    $can_attack_horizontal = ($queen_position_y == $enemy_position_y);
+    $can_attack_vertical = ($queen_position_x == $enemy_position_x);
+    $can_attack_diagnal = (abs($x_diff) == abs($y_diff));
+
+    if($can_attack_horizontal || $can_attack_vertical || $can_attack_diagnal) {
+      $result = true;
+    } else {
+      $result = false;
+    }
+
+    $_SESSION['attack_result'] = $result;
+    $form_state['redirect'] = 'result';
+  }
+
+  function element_validate_range($element) {
+    if($element['#value'] < 1 || $element['#value'] > 8) {
+      form_error($element, t('Number must be 1-8'));
+    }
+  }
+
+  function display_attack_results() {
+    $final_result = $_SESSION['attack_result'];
+    if ($final_result == true){
+      return "The Queen will now dismantle your limbs.";
+    } else {
+      return "The Enemy got away..";
+    }
+  }
