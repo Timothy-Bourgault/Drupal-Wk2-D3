@@ -1,0 +1,66 @@
+<?php
+function rps_menu(){
+  $items= array();
+  $items['form_rps']= array(
+    'title'=>'Rock paper scissors',
+    'page callback'=>'drupal_get_form',
+    'page arguments'=> array('rps_form'),
+    'access callback'=> TRUE,
+    'type'=>MENU_NORMAL_ITEM
+
+  );
+  $items['result_rps']= array(
+    'title'=>'And...',
+    'page callback'=>'result_rps',
+    'access callback'=>TRUE,
+    'type'=>MENU_CALLBACK,
+
+  );
+  return $items;
+}
+
+function rps_form()
+{
+  $form['choice']= array(
+    '#type'=>'radios',
+    '#title'=>t('Rock paper Scissors Game'),
+    '#options'=>array('Rock'=>t('Rock'),'Paper'=> t('Paper'), 'Scissors'=> t('Scissors')),
+    // '#values' => array( 0 => 'Rock', 1 => 'Paper', 2 => 'Scissors'),
+    '#required'=> TRUE,
+  );
+  $form['submit']=  array(
+    '#type'=> 'submit',
+    '#value'=> 'shoot!',
+  );
+  return $form;
+}
+function rps_form_submit($form, &$form_state)
+{
+  $selection = $form_state['values']['choice'];
+  $random_options = array("Rock", "Paper", "Scissors");
+  $random_choice = array_rand($random_options);
+  $random_selection = $random_options[$random_choice];
+
+  // $result_game= '';
+
+  if (($selection == "Rock" && $random_selection == 'Scissors') || ($selection =='Paper' && $random_selection == 'Rock') || ($selection == 'Scissors' && $random_selection == 'Paper')) {
+    $result_game= 'You wOn!!!';
+  }elseif (($selection == "Rock" && $random_selection == 'Paper') || ($selection == 'Paper' && $random_selection =='Scissors') || ($selection == 'Scissors' && $random_selection == 'Rock')) {
+    $result_game = 'You lossed miserably!!!';
+  } else {
+    $result_game = 'It\'s a draw!';
+  }
+
+  $_SESSION['result_game'] = $result_game;
+  $_SESSION['random_selection']= $random_selection;
+  $_SESSION['selection'] = $selection;
+  $form_state['redirect'] = 'result_rps';
+}
+
+function result_rps(){
+
+  $random_selection = $_SESSION['random_selection'];
+  $selection = $_SESSION['selection'];
+  $result_game= $_SESSION['result_game'];
+  return 'You selected: '.$selection.'<br>' . 'The computer selected: ' . $random_selection . '<br>' . $result_game;
+}

@@ -1,0 +1,5 @@
+name = Rock Paper Scissors
+description = Displays the winner of the old game 'Rock, paper, scissors'.
+package = Custom
+core = 7.x
+files[] = rps.module
