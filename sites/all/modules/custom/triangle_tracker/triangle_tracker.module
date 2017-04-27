@@ -8,7 +8,7 @@
       'access callback' => TRUE,
       'type' => MENU_NORMAL_ITEM,
     );
-    $items['result'] = array(
+    $items['triangle_result'] = array(
       'title' => 'Triangle Definition',
       'page callback' => 'display_triangle_definition',
       'access callback' => TRUE,
@@ -47,18 +47,19 @@
     return $form;
   }
 
-  function triangle_tracker_form_submit($form, &$form_state) {
-    $first_side_lenghth = $form_state['values']['first_side'];
-    $second_side_lenghth = $form_state['values']['second_side'];
-    $third_side_lenghth = $form_state['values']['third_side'];
+  function triangle_sides_form_submit($form, &$form_state) {
+    $first_side_length = $form_state['values']['first_side'];
+    $second_side_length = $form_state['values']['second_side'];
+    $third_side_length = $form_state['values']['third_side'];
 
-    if($first_side_length == $second_side_length && $first_side_length == $third_side_length) {
-      $triangle_definition == 'Equalateral';
+    if(($first_side_length == $second_side_length) && ($first_side_length == $third_side_length)) {
+      $triangle_definition = 'Equalateral';
     } elseif($first_side_length == $second_side_length ) {
-      $triangle_definition == 'Isosceles';
+      $triangle_definition = 'Isosceles';
     }
     $_SESSION['triangle_definition'] = $triangle_definition;
-    $form_state['redirect'] = 'result';
+    var_dump ($triangle_definition);
+    $form_state['redirect'] = 'triangle_result';
   }
 
 
@@ -69,6 +70,13 @@
   }
 
   function display_triangle_definition() {
-    $final_result = $_SESSION['triangle_definition'];
-    return "According to the length of the sides you entered, the resulting triangle is an " . $final_result . " triangle. Good Job Triangle Tracker!";
+    $triangle_result = $_SESSION['triangle_definition'];
+    var_dump ($triangle_result);
+    if ($triangle_result == 'Equalateral') {
+      return "According to the length of the sides you entered, the resulting triangle is an equalateral triangle. Good Job Triangle Tracker!";
+    } elseif ($triangle_result == 'Isosceles') {
+        return "According to the length of the sides you entered, the resulting triangle is an isosceles triangle. Good Job Triangle Tracker!";
+    } else {
+      return "nada";
+    }
   }
